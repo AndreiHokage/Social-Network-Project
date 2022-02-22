@@ -8,6 +8,9 @@ Also, if you open more instances for this app ,the changes that one user made in
 
 Also,the app allows to create events and notify users when that events approch the start date. You can make reports in this app about user activity and all messages
 in which the user was involved. You can create PDF reports that can be saved on local machine.<br />
+
+The persistance of this app works with database. So, I used a ASE encryption algorithm to hide the password for users.
+If you want run this app, use the following authentication data : (AndreiBalanici,AndreiBalanici4); (IulianBogdan,IulianBogdan3); (BogdanBentea,BogdanBentea2)
 <br />
 
 ![alt text](https://github.com/AndreiHokage/ImageFolder/blob/main/Poza1.png) <br />
