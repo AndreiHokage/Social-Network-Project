@@ -2,15 +2,14 @@ package repository.database;
 
 
 import config.ApplicationContext;
+import repository.UserRepositorySetterTest;
 import socialNetwork.domain.models.User;
+import socialNetwork.exceptions.DatabaseException;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
-public class UserDatabaseTableSetter {
+public class UserDatabaseTableSetter{
     static String url = ApplicationContext.getProperty("network.database.url");
     static String user = ApplicationContext.getProperty("network.database.user");
     static String password = ApplicationContext.getProperty("network.database.password");
@@ -28,13 +27,14 @@ public class UserDatabaseTableSetter {
         tearDown();
 
         try(Connection connection = DriverManager.getConnection(url, user, password)) {
-            String insertStatementString = "INSERT INTO users(id, first_name, last_name) VALUES (?,?,?)";
+
+            String insertStatementString = "INSERT INTO users(first_name, last_name ,username) VALUES (?,?,?)";
             PreparedStatement insertStatement = connection.prepareStatement(insertStatementString);
 
             for(User user : testData){
-                insertStatement.setLong(1, user.getId());
-                insertStatement.setString(2, user.getFirstName());
-                insertStatement.setString(3, user.getLastName());
+                insertStatement.setString(1, user.getFirstName());
+                insertStatement.setString(2, user.getLastName());
+                insertStatement.setString(3, user.getUsername());
                 insertStatement.executeUpdate();
             }
 
@@ -42,4 +42,5 @@ public class UserDatabaseTableSetter {
             exception.printStackTrace();
         }
     }
+
 }

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import repository.FriendshipRepositorySetterTest;
 import socialNetwork.domain.models.Friendship;
-import socialNetwork.repository.RepositoryInterface;
 import socialNetwork.repository.database.FriendshipDatabaseRepository;
+import socialNetwork.repository.paging.PagingRepository;
 import socialNetwork.utilitaries.UnorderedPair;
 
 
@@ -24,7 +24,7 @@ class FriendshipDataBaseRepositoryTest extends FriendshipRepositorySetterTest {
     private String password = ApplicationContext.getProperty("network.database.password");
 
     @Override
-    public RepositoryInterface<UnorderedPair<Long, Long>, Friendship> getRepository() {
+    public PagingRepository<UnorderedPair<Long, Long>, Friendship> getRepository() {
         if(testRepository == null)
             testRepository = new FriendshipDatabaseRepository(url, user, password);
         return testRepository;

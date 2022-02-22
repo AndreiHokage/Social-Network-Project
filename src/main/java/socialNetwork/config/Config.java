@@ -8,7 +8,7 @@ public class Config {
 
     public static Properties getProperties(){
         try(InputStream inputStream = Config.class.getClassLoader()
-                .getResourceAsStream("config.properties")){
+                .getResourceAsStream("socialNetwork/config.properties")){
             Properties properties = new Properties();
             properties.load(inputStream);
             return properties;

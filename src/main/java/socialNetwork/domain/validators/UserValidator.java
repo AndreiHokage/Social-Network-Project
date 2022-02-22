@@ -16,12 +16,12 @@ public class UserValidator implements EntityValidatorInterface<Long, User> {
     @Override
     public void validate(User userEntity) {
         String errorValidationMessage = "";
-        if (userEntity.getId() < 0)
-            errorValidationMessage = errorValidationMessage.concat("Id cannot be negative!\n");
         if (userEntity.getFirstName().equals(""))
             errorValidationMessage = errorValidationMessage.concat("First name cannot be empty!\n");
         if (userEntity.getLastName().equals(""))
             errorValidationMessage = errorValidationMessage.concat("Last name cannot be empty!\n");
+        if(userEntity.getUsername().equals(""))
+            errorValidationMessage = errorValidationMessage.concat("Username cannot be empty!\n");
         if(!errorValidationMessage.equals(""))
             throw new InvalidEntityException(errorValidationMessage);
     }

@@ -1,23 +1,25 @@
 package socialNetwork.service;
 
-import socialNetwork.domain.models.Friendship;
-import socialNetwork.domain.models.User;
+import socialNetwork.domain.models.*;
 import socialNetwork.domain.validators.EntityValidatorInterface;
-import socialNetwork.repository.RepositoryInterface;
+import socialNetwork.repository.paging.Page;
+import socialNetwork.repository.paging.Pageable;
+import socialNetwork.repository.paging.PageableImplementation;
+import socialNetwork.repository.paging.PagingRepository;
 import socialNetwork.utilitaries.UnorderedPair;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * business layer for User model
  */
 public class UserService {
-    private RepositoryInterface<Long, User> userRepository;
-    private RepositoryInterface<UnorderedPair<Long, Long>, Friendship> friendshipRepository;
+    private PagingRepository<Long, User> userRepository;
+    private PagingRepository<UnorderedPair<Long, Long>, Friendship> friendshipRepository;
+    private PagingRepository<UnorderedPair<Long, Long>, FriendRequest> friendRequestRepository;
     private EntityValidatorInterface<Long, User> userValidator;
 
     /**
@@ -26,23 +28,25 @@ public class UserService {
      * @param friendshipRepository - repository of friendships
      * @param userValidator - validator for User model
      */
-    public UserService(RepositoryInterface<Long, User> userRepository,
-                       RepositoryInterface<UnorderedPair<Long, Long>, Friendship> friendshipRepository,
+    public UserService(PagingRepository<Long, User> userRepository,
+                       PagingRepository<UnorderedPair<Long, Long>, Friendship> friendshipRepository,
+                       PagingRepository<UnorderedPair<Long, Long>, FriendRequest> friendRequestRepository,
                        EntityValidatorInterface<Long, User> userValidator) {
         this.userRepository = userRepository;
         this.friendshipRepository = friendshipRepository;
         this.userValidator = userValidator;
+        this.friendRequestRepository = friendRequestRepository;
     }
 
     /**
      * adds a user to the userRepository
-     * @param id - Long - identifier of user
      * @param firstName - String - first name of user
      * @param lastName - String - last name of user
      * @return empty Optional if the user was added, Optional containing the existing user with same id otherwise
      */
-    public Optional<User> addUserService(Long id, String firstName, String lastName) {
-        User user = new User(id, firstName, lastName);
+
+    public Optional<User> addUserService( String firstName, String lastName ,String username) {
+        User user = new User( firstName, lastName ,username);
         userValidator.validate(user);
         return userRepository.save(user);
     }
@@ -54,8 +58,8 @@ public class UserService {
      * @param lastName - String
      * @return optional with old value if user updated, empty optional otherwise
      */
-    public Optional<User> updateUserService(Long id, String firstName, String lastName){
-        User user = new User(id, firstName, lastName);
+    public Optional<User> updateUserService(Long id, String firstName, String lastName ,String username){
+        User user = new User(id, firstName, lastName, username);
         userValidator.validate(user);
         return userRepository.update(user);
     }
@@ -117,15 +121,57 @@ public class UserService {
         return mapOfFriendships;
     }
 
+
+    public List<FriendshipRequestDTO> findAllRequestFriendsForUserService(Long idUser){
+        List<FriendshipRequestDTO> allRequestFriendList = new ArrayList<>();
+        List<FriendRequest> friendRequestList = friendRequestRepository.getAll();
+        Predicate<FriendRequest> hasID = friendRequest -> friendRequest.getFromUserID().equals(idUser) ||
+                friendRequest.getToUserID().equals(idUser);
+        friendRequestList.stream()
+                .filter(hasID)
+                .forEach(friendRequest -> {
+                    User userThatSendsRequest = userRepository.find(friendRequest.getFromUserID()).get();
+                    User userThatReceivesRequest = userRepository.find(friendRequest.getToUserID()).get();
+                    allRequestFriendList.add(
+                            new FriendshipRequestDTO(userThatSendsRequest,userThatReceivesRequest,
+                                    friendRequest.getDateRequest(),friendRequest.getInvitationStage()));
+                });
+        return allRequestFriendList;
+    }
+
     public Map<Optional<User>, LocalDateTime > findAllFriendsForUserMonthService(Long idUser,int month){
         Map<Optional<User>, LocalDateTime> friendshipsMonth = new HashMap<>();
         findAllFriendsForUserService(idUser).entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().getMonth().getValue() == month )
                 .forEach(entry -> {
-                    //System.out.println(entry);
                     friendshipsMonth.put(entry.getKey(),entry.getValue());
                 });
         return friendshipsMonth;
+    }
+
+    private int pageNumber = 0;
+    private int pageSize = 1;
+
+    private Pageable pageable;
+
+    public void setPageSize(int pageSize){
+        this.pageSize = pageSize;
+    }
+
+    public void setPageable(Pageable pageable){
+        this.pageable = pageable;
+    }
+
+    public Set<User> getNextUsers(){
+        this.pageNumber++;
+        return getUsersOnPage(this.pageNumber);
+    }
+
+    public Set<User> getUsersOnPage(int pageNumber){
+        this.pageNumber = pageNumber;
+        Pageable pageable = new PageableImplementation(pageNumber,this.pageSize);
+        Page<User> userPage = userRepository.getAll(pageable);
+        return userPage.getContent().collect(Collectors.toSet());
     }
 }

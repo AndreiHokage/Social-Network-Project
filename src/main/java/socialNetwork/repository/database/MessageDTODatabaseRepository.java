@@ -4,13 +4,16 @@ import socialNetwork.domain.models.Message;
 import socialNetwork.domain.models.MessageDTO;
 import socialNetwork.domain.models.User;
 import socialNetwork.exceptions.DatabaseException;
-import socialNetwork.repository.RepositoryInterface;
+import socialNetwork.repository.paging.Page;
+import socialNetwork.repository.paging.Pageable;
+import socialNetwork.repository.paging.Paginator;
+import socialNetwork.repository.paging.PagingRepository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class MessageDTODatabaseRepository implements RepositoryInterface<Long, MessageDTO> {
+public class MessageDTODatabaseRepository implements PagingRepository<Long, MessageDTO> {
 
     private String url;
     private String user;
@@ -39,8 +42,9 @@ public class MessageDTODatabaseRepository implements RepositoryInterface<Long, M
             resultSetUsers.next();
             Long idUser = resultSetUsers.getLong("id");
             String firstName = resultSetUsers.getString("first_name");
-            String lastname =resultSetUsers.getString("last_name");
-            return buildUser(idUser, firstName, lastname);
+            String lastname = resultSetUsers.getString("last_name");
+            String username = resultSetUsers.getString("username");
+            return buildUser(idUser, firstName, lastname,username);
         } catch (SQLException throwable) {
             throw new DatabaseException(throwable.getMessage());
         }
@@ -53,8 +57,8 @@ public class MessageDTODatabaseRepository implements RepositoryInterface<Long, M
      * @param lastname - String
      * @return User
      */
-    private User buildUser(Long idUser, String firstName, String lastname) {
-        User user = new User(idUser, firstName, lastname);
+    private User buildUser(Long idUser, String firstName, String lastname ,String username) {
+        User user = new User(idUser, firstName, lastname ,username);
         user.setIdEntity(idUser);
         return user;
     }
@@ -269,6 +273,12 @@ public class MessageDTODatabaseRepository implements RepositoryInterface<Long, M
         } catch (SQLException throwable) {
             throw new DatabaseException(throwable.getMessage());
         }
+    }
+
+    @Override
+    public Page<MessageDTO> getAll(Pageable pageable) {
+        Paginator<MessageDTO> paginator = new Paginator<MessageDTO>(pageable,getAll());
+        return paginator.paginate();
     }
 
     /**

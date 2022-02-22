@@ -3,7 +3,10 @@ package socialNetwork.repository.database;
 import socialNetwork.domain.models.Friendship;
 import socialNetwork.domain.models.InvitationStage;
 import socialNetwork.exceptions.DatabaseException;
-import socialNetwork.repository.RepositoryInterface;
+import socialNetwork.repository.paging.Page;
+import socialNetwork.repository.paging.Pageable;
+import socialNetwork.repository.paging.Paginator;
+import socialNetwork.repository.paging.PagingRepository;
 import socialNetwork.utilitaries.UnorderedPair;
 
 import java.sql.*;
@@ -14,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class FriendshipDatabaseRepository
-        implements RepositoryInterface<UnorderedPair<Long, Long>, Friendship> {
+        implements PagingRepository<UnorderedPair<Long, Long>, Friendship> {
     private String url;
     private String user;
     private String password;
@@ -62,6 +65,12 @@ public class FriendshipDatabaseRepository
     }
 
     @Override
+    public Page<Friendship> getAll(Pageable pageable) {
+        Paginator<Friendship> paginator = new Paginator<Friendship>(pageable,getAll());
+        return paginator.paginate();
+    }
+
+    @Override
     public Optional<Friendship> save(Friendship friendship) {
         try(Connection connection = DriverManager.getConnection(url, user, password)) {
             PreparedStatement findStatement = createFindStatementForFriendshipId(friendship.getId(), connection);
@@ -95,19 +104,7 @@ public class FriendshipDatabaseRepository
 
     @Override
     public Optional<Friendship> update(Friendship newValue) {
-        try(Connection connection = DriverManager.getConnection(url, user, password)) {
-            PreparedStatement findSql = createFindStatementForFriendshipId(newValue.getId(), connection);
-            ResultSet resultSet = findSql.executeQuery();
-            if(resultSet.next()){
-                var oldValue = createFriendshipFromResultSet(resultSet);
-                PreparedStatement updateSql = createUpdateStatementForFriendship(connection, newValue);
-                updateSql.executeUpdate();
-                return Optional.of(oldValue);
-            }
-            return Optional.empty();
-        } catch (SQLException exception) {
-            throw new DatabaseException(exception.getMessage());
-        }
+        return Optional.empty();
     }
 
     /**
@@ -120,9 +117,7 @@ public class FriendshipDatabaseRepository
             Long id1 = resultSet.getLong("id_first_user");
             Long id2 = resultSet.getLong("id_second_user");
             LocalDateTime dateWhenFriendshipWasCreated = resultSet.getTimestamp("date").toLocalDateTime();
-            InvitationStage invitationStage = InvitationStage.valueOf(resultSet.getString("status"));
             Friendship friendship = new Friendship(id1, id2, dateWhenFriendshipWasCreated);
-            friendship.setInvitationStage(invitationStage);
             return  friendship;
         }catch (SQLException exception){
             throw new DatabaseException(exception.getMessage());
@@ -193,21 +188,5 @@ public class FriendshipDatabaseRepository
         findStatement.setLong(3,id.left);
         findStatement.setLong(4,id.right);
         return findStatement;
-    }
-
-    private PreparedStatement createUpdateStatementForFriendship(Connection connection, Friendship newValue) {
-        try{
-            String updateSqlStr = "UPDATE friendships SET status=? WHERE id_first_user=? AND id_second_user=? OR " +
-                    "id_second_user=? AND id_first_user=?";
-            PreparedStatement updateSql = connection.prepareStatement(updateSqlStr);
-            updateSql.setString(1, newValue.getInvitationStage().toString() );
-            updateSql.setLong(2, newValue.getId().left);
-            updateSql.setLong(3, newValue.getId().right);
-            updateSql.setLong(4, newValue.getId().left);
-            updateSql.setLong(5, newValue.getId().right);
-            return updateSql;
-        } catch (SQLException exception){
-            throw new DatabaseException(exception.getMessage());
-        }
     }
 }

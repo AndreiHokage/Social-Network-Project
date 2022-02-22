@@ -5,9 +5,9 @@ import socialNetwork.domain.models.User;
 import socialNetwork.domain.validators.FriendshipValidator;
 import socialNetwork.exceptions.EntityMissingValidationException;
 import socialNetwork.repository.memory.InMemoryRepository;
-import socialNetwork.repository.RepositoryInterface;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import socialNetwork.repository.paging.PagingRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,15 +17,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class FriendshipValidationTest {
-    RepositoryInterface<Long, User> createUserRepository() {
+    PagingRepository<Long, User> createUserRepository() {
         return new InMemoryRepository<>();
     }
 
-    void setUpUserRepository(RepositoryInterface<Long, User> userRepository){
+    void setUpUserRepository(PagingRepository<Long, User> userRepository){
         List<User> userTestData = new ArrayList<>(Arrays.asList(
-                new User(1L, "Michael", "Michael"),
-                new User(2L, "John", "John"),
-                new User(3L, "Marcel", "Marcel")));
+                new User(1L, "Michael", "Michael","b1"),
+                new User(2L, "John", "John","b2"),
+                new User(3L, "Marcel", "Marcel","b3")));
         for(User user : userTestData)
             userRepository.save(user);
     }

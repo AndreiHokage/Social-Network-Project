@@ -3,12 +3,14 @@ package service;
 import config.ApplicationContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import socialNetwork.domain.models.FriendRequest;
 import socialNetwork.domain.models.Friendship;
 import socialNetwork.domain.models.User;
 import socialNetwork.domain.validators.FriendshipValidator;
-import socialNetwork.repository.RepositoryInterface;
 import socialNetwork.repository.csv.FriendshipCsvFileRepository;
 import socialNetwork.repository.csv.UserCsvFileRepository;
+import socialNetwork.repository.database.FriendRequestDatabaseRepository;
+import socialNetwork.repository.paging.PagingRepository;
 import socialNetwork.service.NetworkService;
 import socialNetwork.utilitaries.UnorderedPair;
 
@@ -16,14 +18,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 class NetworkServiceTest {
+
+    String url = ApplicationContext.getProperty("network.database.url");
+    String user = ApplicationContext.getProperty("network.database.user");
+    String password = ApplicationContext.getProperty("network.database.password");
+
     NetworkService createNetworkService(String usersFilePath, String friendshipsFilePath){
-        RepositoryInterface<Long, User> userRepository = new UserCsvFileRepository(usersFilePath);
+        PagingRepository<Long, User> userRepository = new UserCsvFileRepository(usersFilePath);
 
         var friendshipValidator = new FriendshipValidator(userRepository);
-        RepositoryInterface<UnorderedPair<Long, Long>, Friendship> friendshipRepository =
+        PagingRepository<UnorderedPair<Long, Long>, Friendship> friendshipRepository =
                 new FriendshipCsvFileRepository(friendshipsFilePath);
+        PagingRepository<UnorderedPair<Long, Long>, FriendRequest> friendRequestRepository =
+                new FriendRequestDatabaseRepository(url,user,password);
 
-        return new NetworkService(friendshipRepository, userRepository, friendshipValidator);
+        return new NetworkService(friendshipRepository, friendRequestRepository,
+                userRepository, friendshipValidator);
     }
 
     @Test
@@ -58,7 +68,7 @@ class NetworkServiceTest {
         Map<Long, User> expectedUsers = new HashMap<>();
 
         for(long i = 1; i <= 6; i++)
-            expectedUsers.put(i, new User(i, "" + i, "" + i));
+            expectedUsers.put(i, new User(i, "" + i, "" + i, "" + i));
 
         for(User user : users) {
             var friends = user.getListOfFriends();
@@ -103,6 +113,6 @@ class NetworkServiceTest {
 
 
         for(long i = 9; i <= 18; i++)
-            mostSocialCommunity.contains(new User(i, "" + i, "" + i));
+            mostSocialCommunity.contains(new User(i, "" + i, "" + i, "" + i));
     }
 }

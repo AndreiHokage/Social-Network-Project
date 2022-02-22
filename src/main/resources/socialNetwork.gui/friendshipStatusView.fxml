@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.effect.Light.Distant?>
+<?import javafx.scene.effect.Lighting?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="379.0" prefWidth="623.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="socialNetwork.guiControllers.FriendshipStatusController">
+    <children>
+        <AnchorPane layoutX="-7.0" layoutY="38.0" prefHeight="342.0" prefWidth="630.0">
+            <children>
+                <ImageView fitHeight="342.0" fitWidth="623.0" layoutX="4.0" layoutY="4.0" onMouseClicked="#enableAllButtonsAndClearSelection" onMousePressed="#setUsersListViewOnInvisible" pickOnBounds="true">
+                    <image>
+                        <Image url="@../images/userView.png" />
+                    </image></ImageView>
+                <AnchorPane layoutX="6.0" layoutY="9.0" prefHeight="334.0" prefWidth="218.0">
+                    <children>
+                        <ImageView fitHeight="334.0" fitWidth="218.0" layoutX="1.0" onMouseClicked="#enableAllButtonsAndClearSelection" onMousePressed="#setUsersListViewOnInvisible" pickOnBounds="true">
+                            <image>
+                                <Image url="@../images/signUp.png" />
+                            </image>
+                        </ImageView>
+                        <Label layoutX="72.0" layoutY="49.0" prefHeight="18.0" prefWidth="74.0" text="Options" textFill="#d53939">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                            <effect>
+                                <Lighting>
+                                    <bumpInput>
+                                        <InnerShadow />
+                                    </bumpInput>
+                                    <light>
+                                        <Light.Distant />
+                                    </light>
+                                </Lighting>
+                            </effect>
+                        </Label>
+                        <Line endX="100.0" layoutX="110.0" layoutY="87.0" startX="-100.0" stroke="#d53939" />
+                        <Button fx:id="addFriendshipButton" layoutX="48.0" layoutY="115.0" mnemonicParsing="false" onAction="#handleFriendshipRequestFromRequestsController" prefHeight="26.0" prefWidth="119.0" style="-fx-background-color: #d53939; -fx-background-radius: 15px;" text="Request friendship" textFill="WHITE" />
+                  <Button fx:id="approveRequestButton" layoutX="48.0" layoutY="154.0" mnemonicParsing="false" onAction="#handleApprovedFriend" prefHeight="26.0" prefWidth="119.0" style="-fx-background-radius: 15px; -fx-background-color: #d53939;" text="Approve request" textFill="WHITE" />
+                  <Button fx:id="rejectRequestButton" layoutX="48.0" layoutY="192.0" mnemonicParsing="false" onAction="#handleRejectFriend" prefHeight="26.0" prefWidth="119.0" style="-fx-background-radius: 15px; -fx-background-color: #d53939;" text="Reject request" textFill="WHITE" />
+                  <Button fx:id="resubmissionRequestButton" layoutX="48.0" layoutY="230.0" mnemonicParsing="false" onAction="#handleResubmissionRequest" prefHeight="26.0" prefWidth="119.0" style="-fx-background-radius: 15px; -fx-background-color: #d53939;" text="Resubmit request" textFill="WHITE" />
+                  <Button fx:id="withdrawRequestButton" layoutX="50.0" layoutY="270.0" mnemonicParsing="false" onAction="#handleWithdrawRequest" prefHeight="26.0" prefWidth="119.0" style="-fx-background-radius: 15px; -fx-background-color: #d53939;" text="Withdraw request" textFill="WHITE" />
+                    </children></AnchorPane>
+                <Line endX="1.399993896484375" endY="259.1999816894531" layoutX="225.0" layoutY="82.0" startX="-3.0517578125E-5" startY="-72.99999237060547" stroke="#d53939" />
+            <ListView fx:id="requestsSentListView" layoutX="254.0" layoutY="85.0" onMouseClicked="#disableButtonsOnRequestSentListView" prefHeight="202.0" prefWidth="287.0" style="-fx-border-color: #d53939;" />
+            <Line endX="289.2000732421875" endY="-1.2000045776367188" layoutX="334.0" layoutY="56.0" startX="-109.00003051757812" startY="-1.2000045776367188" stroke="#d53939" />
+            <ListView fx:id="requestsReceivedListView" layoutX="254.0" layoutY="86.0" onMouseClicked="#disableButtonsOnRequestReceivedListView" prefHeight="200.0" prefWidth="287.0" style="-fx-border-color: #d53939;" visible="false" />
+            <Button fx:id="showRequestsReceivedButton" layoutX="346.0" layoutY="15.0" mnemonicParsing="false" onAction="#showRequestsReceivedListView" prefHeight="38.0" prefWidth="126.0" style="-fx-background-color: transparent;" text="Received requests" />
+            <Separator layoutX="338.0" layoutY="12.0" orientation="VERTICAL" prefHeight="34.0" prefWidth="3.0" />
+            <Separator layoutX="475.0" layoutY="11.0" orientation="VERTICAL" prefHeight="38.0" prefWidth="6.0" />
+            <Button fx:id="showRequestsSentButton" layoutX="227.0" layoutY="15.0" mnemonicParsing="false" onAction="#showRequestsSentListView" prefHeight="38.0" prefWidth="108.0" style="-fx-background-color: transparent;" text="Sent requests" />
+            </children>
+        </AnchorPane>
+        <HBox prefHeight="38.0" prefWidth="623.0">
+            <children>
+                <Label prefHeight="22.0" prefWidth="96.0" text="Kage" textFill="#d53939">
+                    <font>
+                        <Font name="FontAwesome" size="20.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets left="10.0" top="6.0" />
+                    </HBox.margin>
+                </Label>
+                <Button mnemonicParsing="false" onAction="#switchToUserViewScene" prefHeight="34.0" prefWidth="116.0" style="-fx-background-color: transparent;" text="Friends">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="USER" size="20" wrappingWidth="15.085701942443848" />
+                    </graphic>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="friendRequestButton" mnemonicParsing="false" onAction="#switchToFriendshipRequestScene" prefHeight="34.0" prefWidth="124.0" style="-fx-background-color: transparent;" text="Requests">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                    <graphic>
+                        <FontAwesomeIconView glyphName="CHILD" size="20" text="" wrappingWidth="13.857143491506577" />
+                    </graphic>
+                </Button>
+                <TextField fx:id="searchFriendshipField" onMouseClicked="#setUsersListViewOnVisible" prefHeight="26.0" prefWidth="145.0" promptText="Search friend...">
+                    <HBox.margin>
+                        <Insets top="6.0" />
+                    </HBox.margin>
+                </TextField>
+                <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#switchToMessagesScene" prefHeight="34.0" prefWidth="150.0" style="-fx-background-color: transparent;" text="Messages">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="ENVELOPE" size="20" wrappingWidth="31.199950695037842" />
+                    </graphic>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </Button>
+                <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#switchToReportsScene" prefHeight="34.0" prefWidth="125.0" style="-fx-background-color: transparent;" text="Reports">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="FILE" size="20" />
+                    </graphic>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </Button>
+                <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#switchToEventsViewFromUserScene" prefHeight="28.0" prefWidth="118.0" style="-fx-background-color: transparent;" text="Events">
+                    <HBox.margin>
+                        <Insets top="5.0" />
+                    </HBox.margin>
+                    <graphic>
+                        <FontAwesomeIconView glyphName="CLIPBOARD" size="20" />
+                    </graphic>
+                </Button>
+                <FontAwesomeIconView fx:id="bellIconView" fill="#000000" glyphName="BELL" onMousePressed="#setNotificationsListViewOnVisible" selectionFill="#ff0d0d" size="25">
+                    <HBox.margin>
+                        <Insets right="5.0" top="6.0" />
+                    </HBox.margin>
+                </FontAwesomeIconView>
+            </children>
+        </HBox>
+          <ListView fx:id="usersListView" layoutX="250.0" layoutY="59.0" onMouseClicked="#disableWhenSearchForUser" prefHeight="268.0" prefWidth="200.0" style="-fx-border-color: #e17474;" visible="false" />
+          <Polygon fx:id="triangleAuxiliaryLabel" fill="#d53939" layoutX="345.0" layoutY="5.0" points="-9.399993896484375, 40.0, 8.600006103515625, 40.00000762939453, 0.199981689453125, 27.199981689453125" stroke="GREY" strokeType="INSIDE" visible="false" />
+          <Polygon fx:id="secondPolygon" fill="#d53939" layoutX="614.0" layoutY="55.0" points="-17.60003662109375, 9.199981689453125, 6.103515625E-5, 9.199981689453125, -8.79998779296875, -11.600006103515625" stroke="BLACK" strokeType="INSIDE" visible="false" />
+          <ListView fx:id="notificationsListView" layoutX="423.0" layoutY="63.0" prefHeight="306.0" prefWidth="192.0" style="-fx-border-color: #d53939;" visible="false" />
+    </children>
+</AnchorPane>

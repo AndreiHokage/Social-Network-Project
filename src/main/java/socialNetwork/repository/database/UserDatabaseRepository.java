@@ -2,7 +2,10 @@ package socialNetwork.repository.database;
 
 import socialNetwork.domain.models.User;
 import socialNetwork.exceptions.DatabaseException;
-import socialNetwork.repository.RepositoryInterface;
+import socialNetwork.repository.paging.Page;
+import socialNetwork.repository.paging.Pageable;
+import socialNetwork.repository.paging.Paginator;
+import socialNetwork.repository.paging.PagingRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ import java.util.Optional;
 /**
  * database repository for entity User
  */
-public class UserDatabaseRepository implements RepositoryInterface<Long, User>{
+public class UserDatabaseRepository implements PagingRepository<Long, User> {
     private String url;
     private String user;
     private String password;
@@ -57,9 +60,17 @@ public class UserDatabaseRepository implements RepositoryInterface<Long, User>{
     }
 
     @Override
+    public Page<User> getAll(Pageable pageable) {
+        Paginator<User> paginator = new Paginator<User>(pageable,getAll());
+        return paginator.paginate();
+    }
+
+
+    @Override
     public Optional<User> save(User entityToSave) {
         try(Connection connection = DriverManager.getConnection(url, user, password)){
-            PreparedStatement findSql = createFindUserIdStatement(entityToSave.getId(), connection);
+
+            PreparedStatement findSql = createFindUserUsernameStatement(entityToSave.getUsername(), connection);
             ResultSet resultSet = findSql.executeQuery();
             if(resultSet.next())
                 return Optional.of(createUserFromResultSet(resultSet));
@@ -116,9 +127,20 @@ public class UserDatabaseRepository implements RepositoryInterface<Long, User>{
      */
     private PreparedStatement createFindUserIdStatement(Long id, Connection connection){
         try{
-            String findSqlString = "SELECT id, first_name, last_name FROM users WHERE id = ?";
+            String findSqlString = "SELECT id, first_name, last_name, username FROM users WHERE id = ?";
             PreparedStatement findSql = connection.prepareStatement(findSqlString);
             findSql.setLong(1, id);
+            return findSql;
+        } catch (SQLException exception){
+            throw new DatabaseException(exception.getMessage());
+        }
+    }
+
+    private PreparedStatement createFindUserUsernameStatement(String username, Connection connection){
+        try{
+            String findSqlString = "SELECT id, first_name, last_name, username FROM users WHERE username = ?";
+            PreparedStatement findSql = connection.prepareStatement(findSqlString);
+            findSql.setString(1, username);
             return findSql;
         } catch (SQLException exception){
             throw new DatabaseException(exception.getMessage());
@@ -150,11 +172,12 @@ public class UserDatabaseRepository implements RepositoryInterface<Long, User>{
      */
     private PreparedStatement createUpdateStatementForUser(User newUser, Connection connection){
         try{
-            String updateSqlString = "UPDATE users SET first_name=?, last_name=? WHERE id=?";
+            String updateSqlString = "UPDATE users SET first_name=?, last_name=?, username=? WHERE id=?";
             PreparedStatement updateSql = connection.prepareStatement(updateSqlString);
             updateSql.setString(1, newUser.getFirstName());
             updateSql.setString(2, newUser.getLastName());
-            updateSql.setLong(3, newUser.getId());
+            updateSql.setString(3, newUser.getUsername());
+            updateSql.setLong(4, newUser.getId());
             return updateSql;
         }catch (SQLException exception){
             throw new DatabaseException(exception.getMessage());
@@ -169,11 +192,11 @@ public class UserDatabaseRepository implements RepositoryInterface<Long, User>{
      */
     private PreparedStatement createInsertStatementForUser(User user, Connection connection){
         try{
-            String insertSqlString = "INSERT INTO users(id, first_name, last_name) values (?,?,?)";
+            String insertSqlString = "INSERT INTO users(first_name, last_name, username) values (?,?,?)";
             PreparedStatement insertSql = connection.prepareStatement(insertSqlString);
-            insertSql.setLong(1, user.getId());
-            insertSql.setString(2, user.getFirstName());
-            insertSql.setString(3, user.getLastName());
+            insertSql.setString(1, user.getFirstName());
+            insertSql.setString(2, user.getLastName());
+            insertSql.setString(3,user.getUsername());
             return insertSql;
         }catch (SQLException exception){
             throw new DatabaseException(exception.getMessage());
@@ -190,7 +213,8 @@ public class UserDatabaseRepository implements RepositoryInterface<Long, User>{
             Long id = resultSet.getLong("id");
             String firstName = resultSet.getString("first_name");
             String lastName = resultSet.getString("last_name");
-            return new User(id, firstName, lastName);
+            String username = resultSet.getString("username");
+            return new User(id, firstName, lastName ,username);
         }catch (SQLException exception){
             throw new DatabaseException(exception.getMessage());
         }

@@ -4,7 +4,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
-group 'org.example'
+group 'socialNetwork'
 version '1.0-SNAPSHOT'
 
 ext {
@@ -23,7 +23,8 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-
+    mainModule = 'socialNetwork.gui'
+    mainClass = 'socialNetwork.gui.HelloAplication'
 }
 
 javafx {
@@ -43,6 +44,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.1'
+    implementation "de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2"
+    implementation "org.apache.pdfbox:pdfbox:2.0.20"
 }
 
 test {

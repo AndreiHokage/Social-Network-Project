@@ -11,7 +11,10 @@ import socialNetwork.exceptions.InvalidNumericalValueException;
 import socialNetwork.service.NetworkService;
 import socialNetwork.service.UserService;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -37,6 +40,7 @@ class Command{
     public static final String SEND_INVITATION = "send invitation";
     public static final String APPROVE_INVITATION = "approve invitation";
     public static final String REJECT_INVITATION = "reject invitation";
+    public static final String PASSWORD_HASH = "password to hash";
 }
 
 public class ConsoleInterface {
@@ -66,6 +70,7 @@ public class ConsoleInterface {
         commandMap.put(Command.SEND_INVITATION, this::sendInvitation);
         commandMap.put(Command.APPROVE_INVITATION, this::approveInvitation);
         commandMap.put(Command.REJECT_INVITATION, this::rejectInvitation);
+        commandMap.put(Command.PASSWORD_HASH,this::passwordHash);
     }
 
 
@@ -172,6 +177,23 @@ public class ConsoleInterface {
         System.out.printf("16. %s".indent(MENU_INDENTATION), Command.SEND_INVITATION);
         System.out.printf("17. %s".indent(MENU_INDENTATION), Command.APPROVE_INVITATION);
         System.out.printf("18. %s".indent(MENU_INDENTATION), Command.REJECT_INVITATION);
+        System.out.printf("19. %s".indent(MENU_INDENTATION), Command.PASSWORD_HASH);
+    }
+
+    private void passwordHash(){
+        System.out.println("Username: ");
+        String username =  readStringFromUser();
+        System.out.println("Password: ");
+        String password =  readStringFromUser();
+        try {
+            networkController.changePasswordToHash(username,password);
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendInvitation(){
@@ -312,16 +334,14 @@ public class ConsoleInterface {
     }
 
     private void addUser(){
-        System.out.print("ID: ");
-        Long id = readLongFromUser("Invalid value for id");
-
         System.out.print("First name: ");
         String firstName = readStringFromUser();
 
         System.out.print("Last name: ");
         String lastName = readStringFromUser();
 
-        Optional<User> existingUserOptional = networkController.addUser(id, firstName, lastName);
+        Optional<User> existingUserOptional = networkController.addUser(firstName, lastName,"");
+
 
         if(existingUserOptional.isPresent()){
             User existingUser = existingUserOptional.get();
@@ -341,7 +361,7 @@ public class ConsoleInterface {
         System.out.print("Last name: ");
         String lastName = readStringFromUser();
 
-        Optional<User> existingUserOptional = networkController.updateUser(id, firstName, lastName);
+        Optional<User> existingUserOptional = networkController.updateUser(id, firstName, lastName,"");
 
         if(existingUserOptional.isPresent()){
             System.out.println("User has been updated");

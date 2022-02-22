@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="socialNetwork.guiControllers.LoginController">
+   <children>
+      <SplitPane fx:id="splitPane" dividerPositions="0.5055432372505543" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="329.0" prefWidth="633.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="312.0" prefWidth="310.0">
+               <children>
+                  <ImageView fitHeight="345.0" fitWidth="333.0" layoutX="-1.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/applicationLogo.png" />
+                     </image>
+                  </ImageView>
+                  <AnchorPane layoutX="-2.0" layoutY="-5.0" prefHeight="26.0" prefWidth="634.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane blendMode="DARKEN" minHeight="0.0" minWidth="0.0" prefHeight="312.0" prefWidth="324.0" style="-fx-background-color: ECE8E7;">
+               <children>
+                  <HBox layoutX="36.0" layoutY="144.0" prefHeight="40.0" prefWidth="224.0" style="-fx-background-color: white;">
+                     <children>
+                        <FontAwesomeIconView glyphName="USER" size="20" wrappingWidth="19.25717067718506">
+                           <HBox.margin>
+                              <Insets right="3.0" top="9.0" />
+                           </HBox.margin>
+                        </FontAwesomeIconView>
+                        <TextField fx:id="usernameField" prefHeight="36.0" prefWidth="198.0" promptText="Username" style="-fx-background-radius: 15px;">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </HBox>
+                  <HBox layoutX="36.0" layoutY="184.0" prefHeight="36.0" prefWidth="224.0">
+                     <children>
+                        <FontAwesomeIconView glyphName="KEY" size="20">
+                           <HBox.margin>
+                              <Insets right="3.0" top="9.0" />
+                           </HBox.margin>
+                        </FontAwesomeIconView>
+                        <PasswordField fx:id="passwordField" prefHeight="36.0" prefWidth="199.0" promptText="Password" style="-fx-background-radius: 15px;">
+                           <font>
+                              <Font size="15.0" />
+                           </font></PasswordField>
+                     </children>
+                  </HBox>
+                  <Button fx:id="loginButton" layoutX="59.0" layoutY="238.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="30.0" prefWidth="199.0" style="-fx-background-color: #d53939; -fx-background-radius: 10px;" text="Login" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="signupButton" layoutX="60.0" layoutY="275.0" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="30.0" prefWidth="198.0" style="-fx-background-color: #d53939; -fx-background-radius: 10px;" text="Create new account" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Circle fill="#d53939" layoutX="155.0" layoutY="94.0" radius="39.0" stroke="#ff2400" strokeType="INSIDE" />
+                  <FontAwesomeIconView fill="WHITE" glyphName="USER" layoutX="140.0" layoutY="108.0" size="40.0" wrappingWidth="15.771562576293945" />
+               </children>
+               <effect>
+                  <Glow />
+               </effect>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

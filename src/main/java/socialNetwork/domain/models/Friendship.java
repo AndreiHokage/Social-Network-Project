@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class Friendship extends Entity<UnorderedPair<Long, Long>> {
     private LocalDateTime date;
-    private InvitationStage invitationStage;
 
     /**
      * constructor
@@ -17,17 +16,7 @@ public class Friendship extends Entity<UnorderedPair<Long, Long>> {
      */
     public Friendship(Long idFirstUser, Long idSecondUser) {
         setIdEntity(new UnorderedPair<>(idFirstUser, idSecondUser));
-        invitationStage = InvitationStage.APPROVED;
     }
-
-    public InvitationStage getInvitationStage() {
-        return invitationStage;
-    }
-
-    public void setInvitationStage(InvitationStage invitationStage) {
-        this.invitationStage = invitationStage;
-    }
-
     /**
      * constructor
      * @param idFirstUser - Long
@@ -37,7 +26,6 @@ public class Friendship extends Entity<UnorderedPair<Long, Long>> {
     public Friendship(Long idFirstUser, Long idSecondUser, LocalDateTime date) {
         setIdEntity(new UnorderedPair<>(idFirstUser, idSecondUser));
         this.date = date;
-        invitationStage = InvitationStage.APPROVED;
     }
 
     /**

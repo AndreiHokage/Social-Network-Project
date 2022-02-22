@@ -20,7 +20,7 @@ public class UserCsvFileRepository extends AbstractCsvFileRepository<Long, User>
     @Override
     public User stringToEntity(String entityAsString) {
         String[] userAttributes = entityAsString.split(",");
-        if(userAttributes.length != 3)
+        if(userAttributes.length != 4)
             throw new CorruptedDataException("user csv file is corrupted");
         Long id;
         try{
@@ -30,7 +30,8 @@ public class UserCsvFileRepository extends AbstractCsvFileRepository<Long, User>
         }
         String firstName = userAttributes[1].stripLeading().stripTrailing();
         String lastName = userAttributes[2].stripLeading().stripTrailing();
-        return new User(id, firstName, lastName);
+        String username = userAttributes[3].stripLeading().stripTrailing();
+        return new User(id, firstName, lastName ,username);
     }
 
     @Override
@@ -38,6 +39,7 @@ public class UserCsvFileRepository extends AbstractCsvFileRepository<Long, User>
         return "" +
                 entity.getId() + "," +
                 entity.getFirstName().stripTrailing().stripLeading() + "," +
-                entity.getLastName().stripTrailing().stripLeading();
+                entity.getLastName().stripTrailing().stripLeading() + "," +
+                entity.getUsername().stripTrailing().stripLeading();
     }
 }

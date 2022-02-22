@@ -4,7 +4,7 @@ import socialNetwork.domain.models.Friendship;
 import socialNetwork.domain.models.User;
 import socialNetwork.exceptions.EntityMissingValidationException;
 import socialNetwork.exceptions.InvalidEntityException;
-import socialNetwork.repository.RepositoryInterface;
+import socialNetwork.repository.paging.PagingRepository;
 import socialNetwork.utilitaries.UnorderedPair;
 
 /**
@@ -12,14 +12,14 @@ import socialNetwork.utilitaries.UnorderedPair;
  */
 public class FriendshipValidator
         implements EntityValidatorInterface<UnorderedPair<Long, Long>, Friendship> {
-    private RepositoryInterface<Long, User> userRepository;
+    private PagingRepository<Long, User> userRepository;
 
     /**
      * constructor that creates a new validator that accesses the given user repository for friendship validation
      * @param userRepository - repository of users
      * @throws IllegalArgumentException - userRepository is null
      */
-    public FriendshipValidator(RepositoryInterface<Long, User> userRepository) {
+    public FriendshipValidator(PagingRepository<Long, User> userRepository) {
         this.userRepository = userRepository;
     }
 

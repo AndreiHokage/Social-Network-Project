@@ -10,6 +10,7 @@ import java.util.Objects;
 public class User extends Entity<Long> {
     private String firstName;
     private String lastName;
+    private String username;
     private List<User> listOfFriends = new ArrayList<User>();
 
     /**
@@ -17,7 +18,27 @@ public class User extends Entity<Long> {
      * @param firstName - String
      * @param lastName - String
      */
-    public User(Long id, String firstName, String lastName) {
+
+    public User(String firstName, String lastName, String username) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+    }
+
+    /**
+     * constructor that also sets the id of the user
+     * @param id Long
+     * @param firstName String
+     * @param lastName String
+     */
+    public User(Long id, String firstName, String lastName, String username){
+        setIdEntity(id);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+    }
+
+    public User(Long id, String firstName, String lastName){
         setIdEntity(id);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,6 +48,15 @@ public class User extends Entity<Long> {
         setIdEntity(copyUser.getId());
         this.firstName = copyUser.firstName;
         this.lastName = copyUser.lastName;
+        this.username = copyUser.username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
@@ -83,8 +113,8 @@ public class User extends Entity<Long> {
      */
     @Override
     public String toString() {
-        String userFormat = ", First name: %s, Last name: %s";
-        return super.toString().concat(String.format(userFormat, firstName, lastName));
+        String userFormat = ", First name: %s, Last name: %s ,USername: %s";
+        return super.toString().concat(String.format(userFormat, firstName, lastName, username));
     }
 
     /**
@@ -98,7 +128,8 @@ public class User extends Entity<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName);
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(username, user.username);
     }
 
     /**
@@ -107,6 +138,6 @@ public class User extends Entity<Long> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName);
+        return Objects.hash(firstName, lastName, username);
     }
 }
